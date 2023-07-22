@@ -7,6 +7,7 @@ import pandas as pd
 from sklearn.metrics import r2_score,mean_absolute_error,mean_squared_error
 from src.exception import CustomException
 from src.logger import logging
+import boto3
 
 def save_object(file_path,obj):
     try:    
@@ -52,4 +53,28 @@ def load_object(file_path):
 
     except Exception as e:
         logging.info('Exception occured during load object function utils')
+        raise CustomException(e,sys)
+    
+def S3_load_data(bucket_name_,object):
+
+    try:
+        s3 = boto3.client('s3')
+
+        s3 = boto3.resource(
+            service_name='s3',
+            region_name='ap-south-1',
+            aws_access_key_id='AKIAWNRYIN6W4N2TWHXS',
+            aws_secret_access_key='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'
+        )
+
+        bucket_name = bucket_name_
+            
+        obj = s3.Bucket(bucket_name).Object(object).get()
+
+        df = pd.read_csv(obj['Body'])
+
+        return df
+
+    except Exception as e:
+        logging.info('Exception occured during load dataset function utils')
         raise CustomException(e,sys)

@@ -1,5 +1,6 @@
 import os
 import pandas as pd
+import pickle
 import joblib
 from flask import Flask, render_template, request, jsonify
 from src.pipelines.prediction_pipeline import CustomData,PredictPipeline
@@ -14,7 +15,7 @@ unique_combinations = pd.read_csv("static/assets/unique_combinations.csv")
 # Load the model
 artifacts_path = os.path.join("artifacts",'model.pkl')
 
-model = joblib.load(artifacts_path)
+model = pickle.load(artifacts_path)
 
 # Get unique values from the train_df DataFrame
 unique_locations = unique_combinations["location"].unique()

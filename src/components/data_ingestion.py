@@ -11,6 +11,7 @@ from src.components.data_transformation import DataTransformationConfig
 from sklearn.preprocessing import FunctionTransformer
 from src.components.model_trainer import ModelTrainerConfig
 from src.components.model_trainer import ModelTrainer
+from src.utils import S3_load_data
 
 drop_columns = ['address','url' ,'name', 'listed_in(city)', 'phone','dish_liked','reviews_list','menu_item','listed_in(type)']
 rename_columns = {'approx_cost(for two people)':'cost for two'}
@@ -32,7 +33,7 @@ class DataIngestion:
 
         logging.info('Data Ingestion methods Starts')
         try:
-            df=pd.read_csv(os.path.join('notebooks/data','zomato.csv'))
+            df=S3_load_data(bucket_name_='zomato-dataset',object='zomato.csv')
             logging.info('Dataset read as pandas Dataframe')
 
             os.makedirs(os.path.dirname(self.ingestion_config.raw_data_path),exist_ok=True)
