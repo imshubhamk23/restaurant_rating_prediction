@@ -8,6 +8,7 @@ from sklearn.metrics import r2_score,mean_absolute_error,mean_squared_error
 from src.exception import CustomException
 from src.logger import logging
 import boto3
+import secrets
 
 def save_object(file_path,obj):
     try:    
@@ -63,9 +64,10 @@ def S3_load_data(bucket_name_,object):
         s3 = boto3.resource(
             service_name='s3',
             region_name='ap-south-1',
-            aws_access_key_id='',
-            aws_secret_access_key=''
-        )
+            aws_access_key_id=secrets.get('AWS_ACCESS_KEY_ID'),
+            aws_secret_access_key=secrets.get('AWS_SECRET_ACCESS_KEY')
+            )
+        
 
         bucket_name = bucket_name_
             
