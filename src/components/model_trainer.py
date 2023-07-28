@@ -1,5 +1,6 @@
 import os
 import sys
+import joblib
 from src.logger import logging
 from src.exception import CustomException
 from src.utils import evaluate_model
@@ -15,7 +16,7 @@ from sklearn.tree import DecisionTreeRegressor
 
 @dataclass
 class ModelTrainerConfig():
-    model_trainer_path = os.path.join('artifacts','model.pkl')
+    model_trainer_path = os.path.join('artifacts','model.joblib')
 
 class ModelTrainer():
     def __init__(self):

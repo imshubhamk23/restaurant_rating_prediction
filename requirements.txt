@@ -6,5 +6,6 @@ matplotlib
 category_encoders
 Flask
 boto3
+ipykernel
 dill
 -e .

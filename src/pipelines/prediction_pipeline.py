@@ -1,62 +1,76 @@
-import sys
 import os
-from src.exception import CustomException
+import sys
+from src.utils import save_object,load_object
 from src.logger import logging
-from src.utils import load_object
+from dataclasses import dataclass
+from src.exception import CustomException
 import pandas as pd
+import numpy as np
+import joblib # import the lib to load / Save the model
 
+num_columns = ['votes', 'cost']
+cat_columns = ['online_order', 'book_table', 'location', 'rest_type', 'cuisines',]            
+all_columns = num_columns+cat_columns
 
 class PredictPipeline:
+
     def __init__(self):
         pass
 
-    def predict(self,features):
+    def predict(self, features):
         try:
-            preprocessor_path = os.path.join('artifacts','preprocessor.pkl')
-            model_path = os.path.join('artifacts','model.pkl')
+            preprocessor_path = os.path.join('artifacts', 'preprocessor.pkl')
+            model_path = os.path.join('artifacts', 'model.joblib')  # Save the model as .joblib
 
             preprocessor = load_object(preprocessor_path)
-            model = load_object(model_path)
+            model = joblib.load(model_path)  # Use joblib.load to load the model
 
-            data_scaled = preprocessor.transform(features)
-            pred = model.predict(data_scaled)
+            print("Preprocessor type:", type(preprocessor))
+            print("Model type:", type(model))
+
+            scaled_data = preprocessor.transform(features)
+            df = pd.DataFrame(scaled_data, columns=all_columns)
+            pred = model.predict(df)
             return pred
 
         except Exception as e:
-            logging.info('Exception has occured in prediction')
-            raise CustomException(e,sys)
+            logging.info('Error occurred in Prediction')
+            raise CustomException(e, sys)
+
+@dataclass
+class ModelTrainerConfig():
+    model_trainer_path = os.path.join('artifacts', 'model.joblib')
 
 class CustomData:
     def __init__(self,
                 votes:float,
-                cost_for_two:float,
+                cost:float,
                 online_order:bool,
                 book_table:bool,
                 location:str,
                 rest_type:str,
-                cuisines:str):
-    
+                cuisines:str
+                ):
 
         self.votes = votes
-        self.cost_for_two = cost_for_two
+        self.cost = cost
         self.online_order = online_order
         self.book_table = book_table
         self.location = location
         self.rest_type = rest_type
         self.cuisines = cuisines
-        
+   
 
     def get_data_as_dataframe(self):
         try:
             custom_data_input_dict ={
                 'votes':[self.votes],
-                'cost_for_two':[self.cost_for_two],
+                'cost':[self.cost],
                 'online_order':[self.online_order],
                 'book_table':[self.book_table],
                 'location':[self.location],
                 'rest_type':[self.rest_type],
-                'cuisines':[self.cuisines],
-                
+                'cuisines':[self.cuisines]
             }
             df = pd.DataFrame(custom_data_input_dict)
             logging.info('Dataframe Gathered')
@@ -65,5 +79,17 @@ class CustomData:
 
         
         except Exception as e:
-            logging.info('Exception Occured in prediction pipeline')
+            logging.info('Error occured in get data as dataframe')
             raise CustomException(e,sys)
+
+
+
+"""if __name__=='__main__':
+    predict_obj = PredictPipeline()
+    data  = CustomData(357,3500,False,True,"Richmond Road","Fine Dining","North Indian, Mughlai")
+    df = data.get_data_as_dataframe()
+    print(df)
+    print(predict_obj.predict(df))
+"""
+
+ 

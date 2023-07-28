@@ -14,7 +14,7 @@ from src.components.model_trainer import ModelTrainer
 from src.utils import S3_load_data
 
 drop_columns = ['address','url' ,'name', 'listed_in(city)', 'phone','dish_liked','reviews_list','menu_item','listed_in(type)']
-rename_columns = {'approx_cost(for two people)':'cost for two'}
+rename_columns = {'approx_cost(for two people)':'cost'}
 
 ## Intitialize the Data Ingestion Configuration
 
@@ -33,7 +33,7 @@ class DataIngestion:
 
         logging.info('Data Ingestion methods Starts')
         try:
-            df=S3_load_data(bucket_name_='zomato-dataset',object='zomato.csv')
+            df=S3_load_data(bucket_name_='zomato-data-set',object='zomato.csv')
             logging.info('Dataset read as pandas Dataframe')
 
             os.makedirs(os.path.dirname(self.ingestion_config.raw_data_path),exist_ok=True)
@@ -44,7 +44,8 @@ class DataIngestion:
                     ("drop_columns",FunctionTransformer(lambda x:x.drop(drop_columns,axis=1))),
                     ("rename_columns",FunctionTransformer(lambda x:x.rename(columns = rename_columns))),
                     ("drop_na",FunctionTransformer(lambda x:x.dropna(how='any'))),
-                    ("drop_duplicates",FunctionTransformer(lambda x: x.drop_duplicates()))
+                    ("drop_duplicates",FunctionTransformer(lambda x: x.drop_duplicates())),
+                    ('replace_into_bool', FunctionTransformer(lambda x: x.replace(('Yes', 'No'), (True, False))))
                 ]
             )
 
