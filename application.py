@@ -9,7 +9,9 @@ from src.components.data_ingestion import DataIngestion
 from src.components.model_trainer import ModelTrainer
 from src.pipelines.training_pipeline import check_if_model_is_available
 
-app = Flask(__name__)
+application = Flask(__name__)
+
+app = application
 
 # Load the train.csv file
 unique_combinations = pd.read_csv("static/assets/unique_combinations.csv") 
