@@ -61,6 +61,5 @@ def predict():
 
 if __name__ == "__main__":
     # Trigger the training pipeline before starting the Flask app
-    if not check_if_model_is_available():
-        exit(1)
+    check_if_model_is_available()
     app.run(host='0.0.0.0', debug=True)
