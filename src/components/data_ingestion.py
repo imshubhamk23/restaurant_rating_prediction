@@ -33,7 +33,7 @@ class DataIngestion:
 
         logging.info('Data Ingestion methods Starts')
         try:
-            df=S3_load_data(bucket_name_='zomato-data-set',object='zomato.csv')
+            df=S3_load_data(bucket_name_='zomato-dataset',object='zomato.csv')
             logging.info('Dataset read as pandas Dataframe')
 
             os.makedirs(os.path.dirname(self.ingestion_config.raw_data_path),exist_ok=True)
