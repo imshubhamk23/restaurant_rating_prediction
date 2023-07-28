@@ -1,19 +1,21 @@
 import os
 import pandas as pd
+import pickle
 import joblib
 from flask import Flask, render_template, request, jsonify
-from src.pipelines.prediction_pipeline import CustomData,PredictPipeline
+from src.pipelines.prediction_pipeline import CustomData, PredictPipeline
+from src.components.data_transformation import DataTransformation
+from src.components.data_ingestion import DataIngestion
+from src.components.model_trainer import ModelTrainer
+from src.pipelines.training_pipeline import check_if_model_is_available
 
-application = Flask(__name__)
-
-app = application
+app = Flask(__name__)
 
 # Load the train.csv file
 unique_combinations = pd.read_csv("static/assets/unique_combinations.csv") 
 
 # Load the model
-# artifacts_path = os.path.join("artifacts",'model.pkl')
-
+# artifacts_path = os.path.join("artifacts", 'model.pkl')
 # model = pickle.load(artifacts_path)
 
 # Get unique values from the train_df DataFrame
@@ -56,4 +58,7 @@ def predict():
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0',debug=True)
+    # Trigger the training pipeline before starting the Flask app
+    if not check_if_model_is_available():
+        exit(1)
+    app.run(host='0.0.0.0', debug=True)

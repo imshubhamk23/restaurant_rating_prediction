@@ -64,8 +64,8 @@ def S3_load_data(bucket_name_,object):
         s3 = boto3.resource(
             service_name='s3',
             region_name='ap-south-1',
-            aws_access_key_id=secrets.get('AWS_ACCESS_KEY_ID'),
-            aws_secret_access_key=secrets.get('AWS_SECRET_ACCESS_KEY')
+            aws_access_key_id='AKIAWNRYIN6W4N2TWHXS',
+            aws_secret_access_key='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'
             )
         
 
